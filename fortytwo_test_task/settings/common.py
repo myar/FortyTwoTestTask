@@ -92,7 +92,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'uploads')
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/uploads/'
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
@@ -115,7 +114,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'assets'),
 )
 
-
 # Template Settings
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or
@@ -126,4 +124,4 @@ TEMPLATE_DIRS = (
 )
 
 # Turn off south during test
-# SOUTH_TESTS_MIGRATE = False
+SOUTH_TESTS_MIGRATE = False

@@ -1,1 +1,49 @@
- 
+body {
+  min-width: 1070px;
+  margin: 0;
+  padding: 20px;
+  font-family: Georgia,serif;
+}
+
+h3 {
+  font-size: 22px;
+  padding: 2px;
+  font-family: Georgia,serif;
+  line-height: 26px;
+  font-weight: normal;
+}
+
+p {
+  font-size: 14px;
+  padding: 2px;
+  line-height: 18px;
+}
+
+.clear {
+  clear: both;
+}
+
+.content {
+  width: 100%;
+}
+
+.links {
+  top: 30px;
+  position: relative;
+  float: left;
+}
+
+.column_left {
+  margin: 0 10px;
+  position: relative;
+  width: 47%;
+  float: left;
+}
+
+.column_right {
+  margin: 0 10px;
+  margin-top: -15px;
+  position: relative;
+  float: right;
+  width: 47%;
+}
