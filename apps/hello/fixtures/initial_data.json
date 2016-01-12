@@ -1,0 +1,34 @@
+[
+  {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2013-10-22 04:57:26",
+      "groups": [],
+      "user_permissions": [],
+      "password": "sha1$82ba9$e5cf9c1f6df19cd157b210743003d38dc2f84ace",
+      "email": "n.yaremov@gmail.com",
+      "date_joined": "2013-10-18 01:47:26"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "hello.mydata",
+    "fields": {
+      "bio": "Starting from early 2010 I am working as private entrepreneur\\r\\n in Web Applications direction. 2013 developing web solutions using Python/Django, providing web hosting. At the moment I have 6 sites in my portfolio. Strongly interested in developing my Python skills and working on enterprise projects.",
+      "date_birth": "1980-09-27",
+      "name": "Mykola",
+      "contacts": "phone: +380673622020",
+      "skype": "nykolay27",
+      "surname": "Yaremov",
+      "jabber": "rasem@jabber.org",
+      "email": "n.yaremov@gmail.com"
+    }
+  }
+]
