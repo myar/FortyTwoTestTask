@@ -9,12 +9,12 @@
       "is_active": true,
       "is_superuser": true,
       "is_staff": true,
-      "last_login": "2013-10-22 04:57:26",
+      "last_login": "2016-01-12 16:48:23",
       "groups": [],
       "user_permissions": [],
       "password": "sha1$82ba9$e5cf9c1f6df19cd157b210743003d38dc2f84ace",
       "email": "n.yaremov@gmail.com",
-      "date_joined": "2013-10-18 01:47:26"
+      "date_joined": "2016-01-12 16:47:26"
     }
   },
   {
