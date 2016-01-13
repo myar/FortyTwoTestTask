@@ -17,3 +17,7 @@ class SomeTests(TestCase):
         # check if correct data in response
         self.assertContains(response, '<p>Name: Mykola</p>',
                             count=1, status_code=200)
+
+        # check response when data doesn't exist
+        response = self.client.get(reverse('home-page',  kwargs={'pk': 99}))
+        self.assertEqual(response.status_code, 404)
