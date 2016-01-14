@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h4>First 10 of requests</h4>
+  <div id="requests">
+    <ul>
+      {% for obj in objs %}
+        <li>
+          <p class="{% cycle 'odd' 'pair' %}">#{{ obj.id }}: at {{ obj.req_date|date:'Y-m-d H:i:s' }} to {{ obj.host}} -- {{ obj.method }}:{{ obj.path }}
+        </p></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+
