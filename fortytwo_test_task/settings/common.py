@@ -29,7 +29,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.myaremov.at.getbarista.com', ]
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'apps.hello',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -92,7 +93,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'uploads')
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/uploads/'
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
@@ -114,7 +114,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(BASE_DIR, 'assets'),
 )
-
 
 # Template Settings
 TEMPLATE_DIRS = (
