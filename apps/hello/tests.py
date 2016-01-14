@@ -42,9 +42,13 @@ class MiddlewareTest(TestCase):
         objs = StorageRequests.objects.all()
         self.assertEqual(objs.count(), 1)
         self.assertEqual(req.request['PATH_INFO'], objs[0].path)
-        req2 = self.client.get(reverse('home-page', kwargs={'pk': 10000}))
-        self.assertEqual(objs.count(), 2)
-        self.assertEqual(req2.request['PATH_INFO'], objs[1].path)
+
+        for i in xrange(10):
+            self.client.get(reverse('home-page', kwargs={'pk': int(i)}))
+
+        objs = StorageRequests.objects.all()
+        for i in objs:
+            self.assertEqual(i.viewed, False)
 
     def test_http_request_storage(self):
         """
@@ -57,4 +61,22 @@ class MiddlewareTest(TestCase):
         res = self.client.get(reverse('middleware-storage'))
         # Check if only last 10 items displayed
         self.assertContains(res, 'to testserver -- GET:%s' % contact_url,
-                            count=10, status_code=200)
+                            count=9, status_code=200)
+        self.assertContains(res, 'to testserver -- GET:/store/',
+                            count=1, status_code=200)
+
+        objs = StorageRequests.objects.filter(viewed=False).\
+            values_list('id', flat=True)
+        request = self.client.post(
+            reverse('middleware-storage'),
+            {'ids_json': str(objs), },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest', )
+
+        self.assertContains(request, 'to testserver -- GET:',
+                            count=9, status_code=200)
+        self.assertContains(request, 'to testserver -- POST:',
+                            count=1, status_code=200)
+        # chack only last 9 items, last post request not updated
+        objs = StorageRequests.objects.all()[1:10]
+        for i in objs:
+            self.assertEqual(i.viewed, True)

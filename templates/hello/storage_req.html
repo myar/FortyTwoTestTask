@@ -1,14 +1,45 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+    {% load staticfiles %}
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="{% static 'js/jquery.cookie.js' %}" type='text/javascript'></script>
+    <script src="http://malsup.github.com/jquery.form.js" type="text/javascript"></script>
+    <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+        var ids_json = JSON.stringify({{ new_ids }});
+        if (ids_json)
+            setInterval("refreshdata()", 5000);
+        function refresh() {
+            $.ajax({
+                url: "{% url 'middleware-storage' %}",
+                type: 'get',
+                success: function(data) {
+                    $('.requests').html(data);
+                }
+            });
+        };
+        function refreshdata() {
+            $.ajax({
+                url: "{% url 'middleware-storage' %}",
+                type: 'post',
+                data: {'csrfmiddlewaretoken': $.cookie('csrftoken'),
+                       'ids_json': ids_json},
+                success: function(data) {
+                    $('.requests').html(data);
+                }
+            });
+        };
+
+    </script>
+{% endblock %}
+
+{% block title %}
+{{ count }}
+{% endblock title %}
+
 {% block content %}
-  <h4>First 10 of requests</h4>
-  <div id="requests">
-    <ul>
-      {% for obj in objs %}
-        <li>
-          <p class="{% cycle 'odd' 'pair' %}">#{{ obj.id }}: at {{ obj.req_date|date:'Y-m-d H:i:s' }} to {{ obj.host}} -- {{ obj.method }}:{{ obj.path }}
-        </p></li>
-      {% endfor %}
-    </ul>
-  </div>
+    <h4> Last 10 of requests</h4>
+    {% include 'hello/list_requests.html' %}
 {% endblock %}
 

@@ -23,6 +23,10 @@ class StorageRequests(models.Model):
     path = models.CharField('Path', max_length=255)
     method = models.CharField('Method', max_length=30)
     req_date = models.DateTimeField('Data request', auto_now_add=True)
+    viewed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-id', ]
 
     def __unicode__(self):
         return self.host

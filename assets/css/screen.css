@@ -47,3 +47,12 @@ p {
   float: right;
   width: 47%;
 }
+
+.odd {
+  font-weight: bold;
+}
+
+.pair {
+  font-weight: normal;
+}
+}
