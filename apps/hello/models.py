@@ -16,3 +16,13 @@ class MyData(models.Model):
 
     def __unicode__(self):
         return u'%s %s' % (self.name, self.surname)
+
+
+class StorageRequests(models.Model):
+    host = models.CharField('Host', max_length=255)
+    path = models.CharField('Path', max_length=255)
+    method = models.CharField('Method', max_length=30)
+    req_date = models.DateTimeField('Data request', auto_now_add=True)
+
+    def __unicode__(self):
+        return self.host
