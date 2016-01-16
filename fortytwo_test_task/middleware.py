@@ -14,4 +14,3 @@ class ProcessMiddleware:
         rqst.path = request.get_full_path()
         rqst.method = request.method
         rqst.save()
-        return None
