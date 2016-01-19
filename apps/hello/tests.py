@@ -84,3 +84,88 @@ class MiddlewareTest(TestCase):
         # check if only 8 items has had special class 'odd'
         self.assertContains(request, 'class="odd"',
                             count=8, status_code=200)
+
+
+class EditDataTest(TestCase):
+    """
+    This test verifying, if can edit my data after authorization
+    """
+    fixtures = ['initial_data.json']
+
+    def setUp(self):
+        User.objects.create_user(username='testuser',
+                                 email='user@host.net',
+                                 password='pass')
+
+    def test_login(self):
+        """
+        This is function verify login on page
+        """
+        # Verifying if redirected as url on login page
+        res = self.client.get(reverse('home_url', kwargs={'pk': 1}))
+        self.assertContains(res, 'title="Login">Login</a>',
+                            count=1, status_code=200)
+        res = self.client.get(reverse('edit-my-data', kwargs={'pk': 1}))
+        self.assertRedirects(res, reverse('login') + '?next=' + \
+                             reverse('edit-my-data', kwargs={'pk': 1}))
+        # Verifying if correct login on page
+        self.client.login(username='testuser', password='pass')
+        res = self.client.get(reverse('home_url', kwargs={'pk': 1}))
+        self.assertContains(res, 'title="edit my data">Edit</a>',
+                            count=1, status_code=200)
+        response = self.client.get(reverse('edit-my-data', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response,
+                            'class="submit" type="submit" value="Save"')
+
+    def test_edit_page(self):
+        """
+        This is simple function validation data in form
+        """
+        # Logged
+        self.client.login(username='testuser', password='pass')
+        #Add all data
+        data = {"name": u'Mykola',
+                "surname": u'Yaremov',
+                "date_birth": datetime.date(1980, 9, 27),
+                "bio": u'trala la la la la',
+                "email": u'n.yaremov@gmail.com',
+                "jabber": u'jaber',
+                "skype": u'skype',
+                "contacts": u'akakkd23edfrwssdcvf',
+                }
+        # Verifying request post , redirect - true
+        res = self.client.post(reverse('edit-my-data', kwargs={'pk': 1}), data,
+                                       follow=True)
+        # Load page (/contacts/1/) if correct data
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue('"success": true' in res.content)
+        objs = MyData.objects.all()
+        self.assertTrue(objs[0].contacts, data['contacts'])
+
+    def test_return_error_edit(self):
+        """
+        This is function testing if return error list with not correct data
+        """
+        self.client.login(username='testuser', password='pass')
+        # Add part data
+        data = {"name": "Rasem",
+                "email": "wqwert", }
+        # Verifying request post , redirect - true
+        res = self.client.post(reverse('edit-my-data', kwargs={'pk': 1}),
+                               data, follow=True)
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, 'This field is required', count=6,
+                            status_code=200)
+        self.assertContains(res, 'Enter a valid email address.', count=1,
+                            status_code=200)
+
+    def test_clalendar_widget(self):
+        """
+        This is test to simple test if add datepicker widget on page
+        """
+        temp = Template(EditMyDataForm())
+        cont = Context()
+        # verification
+        self.assertTrue("$('#id_date_birth').datepicker(" in temp.render(cont))
