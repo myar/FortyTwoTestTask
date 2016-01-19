@@ -19,10 +19,7 @@ def http_request_storage(request):
     c.update(csrf(request))
     objs = StorageRequests.objects.all()
     data = objs.filter(viewed=False)
-    new_ids = list(data.values_list('id', flat=True))
-    context = {'objs': objs[:10],
-               'count': data.count(),
-               'new_ids': new_ids}
+    context = {'objs': objs[:10], }
 
     if request.method == 'POST' and request.is_ajax():
         ids = []
