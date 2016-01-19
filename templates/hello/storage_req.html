@@ -12,17 +12,19 @@
                 url: "{% url 'middleware-storage' %}",
                 type: 'post',
                 data: {'csrfmiddlewaretoken': $.cookie('csrftoken'),
-                       'ids_json': ids_json},
+                       'ids_json': JSON.stringify(get_list())},
                 success: function(data) {
                     $('.requests').html(data);
-                }
+                },
             });
         };
-
-        var ids_json = JSON.stringify({{ new_ids }});
-
-        if (ids_json)
-            setInterval(refreshdata, 10000);
+        function get_list(){
+            var lst = [];
+            $(".requests ul li.odd").each(function() {lst.push($(this).text())});
+            return lst
+            };
+        console.log(get_list())
+        setInterval(refreshdata, 10000);
     });
     </script>
 {% endblock %}

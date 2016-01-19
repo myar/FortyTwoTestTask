@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -67,16 +69,18 @@ class MiddlewareTest(TestCase):
 
         objs = StorageRequests.objects.filter(viewed=False).\
             values_list('id', flat=True)
+        request = self.client.get(reverse('middleware-storage'),
+                                  {'ids_json': str(objs), }, )
+        # ckeck if oll item had has cpecial class 'odd'
+        self.assertContains(request, 'class="odd"',
+                            count=10, status_code=200)
+        data = [u'#10: at 2016-01-19 14:05:47 to testserver -- GET:/325/',
+                u'#9: at 2016-01-19 14:05:47 to testserver -- GET:/325/']
+        # post 2 items how view, from medium list
         request = self.client.post(
             reverse('middleware-storage'),
-            {'ids_json': str(objs), },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest', )
-
-        self.assertContains(request, 'to testserver -- GET:',
-                            count=9, status_code=200)
-        self.assertContains(request, 'to testserver -- POST:',
-                            count=1, status_code=200)
-        # chack only last 9 items, last post request not updated
-        objs = StorageRequests.objects.all()[1:10]
-        for i in objs:
-            self.assertEqual(i.viewed, True)
+            {'ids_json': json.dumps(data), },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # check if only 8 items has had special class 'odd'
+        self.assertContains(request, 'class="odd"',
+                            count=8, status_code=200)
