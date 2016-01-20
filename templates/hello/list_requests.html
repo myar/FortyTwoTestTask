@@ -1,0 +1,7 @@
+<div class="requests">
+    <ul>
+        {% for obj in objs %}
+            <li class="{% if not obj.viewed %}odd{% else %}pair{% endif %}">#{{ obj.id }}: at {{ obj.req_date|date:'Y-m-d H:i:s' }} to {{ obj.host}} -- {{ obj.method }}:{{ obj.path }}</li>
+      {% endfor %}
+    </ul>
+</div>
