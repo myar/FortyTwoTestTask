@@ -25,6 +25,7 @@ class SomeTests(TestCase):
         # check if correct data in response
         self.assertContains(response, '<p>Name: Mykola</p>',
                             count=1, status_code=200)
+        self.assertContains(response, '<p>Photo: ')
 
         # check response when data doesn't exist
         response = self.client.get(reverse('home-page',  kwargs={'pk': 99}))
@@ -92,7 +93,7 @@ class MiddlewareTest(TestCase):
 
 class EditDataTest(TestCase):
     """
-    This test verifying, if can edit my data after authorization
+    This test verifying, if can edit data after authorization
     """
     fixtures = ['initial_data.json']
 

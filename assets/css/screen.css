@@ -55,4 +55,9 @@ p {
 .pair {
   font-weight: normal;
 }
+
+.right_button_edit {
+  position: absolute;
+  top: 90px;
+  right: 250px;
 }
