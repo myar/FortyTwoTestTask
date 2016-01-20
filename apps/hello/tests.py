@@ -1,8 +1,11 @@
 import json
 import datetime
 
+from StringIO import StringIO
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.template import Template, Context
 
@@ -187,27 +190,53 @@ class TagTest(TestCase):
     """
 
     def test_tag_via_template_without_login(self):
-        #Test with out
+        """
+           Test when user is not authentificate
+        """
         t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
         c = Context()
         self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
+        resp = self.client.get(reverse('home'))
+        self.assertNotContains(resp, '(admin)</a>')
 
     def test_tag_via_template_with_login(self):
-        #Test with obj
-        user = authenticate(username='admin', password='admin')
-        t = Template('{% load admin_edit_object %}' + '{% edit_link obj%}')
+        """
+           Test when user is authentificate
+        """
+        user = self.client.login(username='admin', password='admin')
+        t = Template('{% load admin_edit_object %}{% edit_link obj%}')
         obj = MyData.objects.get(id=1)
         c = Context({'user': user, 'obj': obj})
-        self.assertEqual(t.render(c), '<a href="/admin/myapp/mydata/1/">(admin)</a>')
-        #Test witout obj
+        self.assertEqual(t.render(c),
+                         '<a href="/admin/hello/mydata/1/">(admin)</a>')
+        # Test witout obj
         c = Context({'user': user})
         self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
-        res = self.client.get(reverse('home-page', kwargs={'pk': 1}))
-        self.assertContains(res, '<a href="#">(admin)</a>', count=0, status_code=200)
-        user = authenticate(username='admin', password='admin')
+        resp = self.client.get(reverse('home-page', kwargs={'pk': 1}))
+        self.assertNotContains(resp, '<a href="#">(admin)</a>')
+
+        user = self.client.login(username='admin', password='admin')
         t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
         obj = StorageRequests.objects.get(id=1)
         c = Context({'user': user, 'obj': obj})
-        self.assertEqual(t.render(c), '<a href="/admin/myapp/storagerequests/1/">(admin)</a>')
-        resp = self.client.get("/admin/myapp/storagerequests/1/")
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            t.render(c),
+            '<a href="/admin/hello/storagerequests/1/">(admin)</a>')
+        resp = self.client.get("/admin/hello/storagerequests/1/")
+        self.assertEqual(resp.status_code, 200)
+
+
+class OtherTests(TestCase):
+
+    def test_list_all_models(self):
+        """
+        This is function call function and verify if correct response
+        """
+
+        out = StringIO()
+        err = StringIO()
+        call_command('list_all_models', stdout=out, stderr=err)
+        self.assertTrue(u'Model MyData has -' in out.getvalue())
+        self.assertTrue(u'error: Model MyData has -' in err.getvalue())
+        self.assertEqual(out.getvalue().count('Model'),
+                         len(models.get_models()))
