@@ -31,9 +31,6 @@ class MyData(models.Model):
             image.save(self.photo.path)
 
 
-
-
-
 class StorageRequests(models.Model):
     host = models.CharField('Host', max_length=255)
     path = models.CharField('Path', max_length=255)
