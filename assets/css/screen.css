@@ -61,3 +61,31 @@ p {
   top: 90px;
   right: 250px;
 }
+
+.links {
+  top:30px;
+  position:relative;
+}
+
+.errorlist {
+  color: red;
+}
+
+.right_table {
+  position: relative;
+  float: left;
+  width: 340px;
+  text-align: center;
+}
+
+.left_table {
+  position: relative;
+  float: left;
+  width: 370px;
+  text-align: center;
+}
+
+.spinner {
+  display: none;
+  position: relative;
+}

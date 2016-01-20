@@ -130,6 +130,7 @@ class EditDataTest(TestCase):
         # Logged
         self.client.login(username='testuser', password='pass')
         # Add all data
+        image = open('uploads/photos/12.jpg')
         data = {"name": u'Mykola',
                 "surname": u'Yaremov',
                 "date_birth": datetime.date(1980, 9, 27),
@@ -138,16 +139,19 @@ class EditDataTest(TestCase):
                 "jabber": u'jaber',
                 "skype": u'skype',
                 "contacts": u'akakkd23edfrwssdcvf',
+                "photo": image,
                 }
         # Verifying request post , redirect - true
         res = self.client.post(reverse('edit-data', kwargs={'pk': 1}), data,
-                               follow=True)
+                               follow=True,
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # Load page (/contacts/1/) if correct data
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue('"success": true' in res.content)
         objs = MyData.objects.all()
         self.assertTrue(objs[0].contacts, data['contacts'])
+        self.assertEqual(objs[0].photo.width, 200)
 
     def test_return_error_edit(self):
         """
@@ -159,7 +163,8 @@ class EditDataTest(TestCase):
                 "email": "wqwert", }
         # Verifying request post , redirect - true
         res = self.client.post(reverse('edit-data', kwargs={'pk': 1}),
-                               data, follow=True)
+                               data, follow=True,
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(res.status_code, 200)
         self.assertContains(res, 'This field is required', count=6,
                             status_code=200)
