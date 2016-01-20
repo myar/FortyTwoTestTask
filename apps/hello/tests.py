@@ -179,3 +179,35 @@ class EditDataTest(TestCase):
         cont = Context()
         # Verification
         self.assertTrue("$('#id_date_birth').datepicker(" in temp.render(cont))
+
+
+class TagTest(TestCase):
+    """
+    This is test to test template tag edit_data
+    """
+
+    def test_tag_via_template_without_login(self):
+        #Test with out
+        t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
+        c = Context()
+        self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
+
+    def test_tag_via_template_with_login(self):
+        #Test with obj
+        user = authenticate(username='admin', password='admin')
+        t = Template('{% load admin_edit_object %}' + '{% edit_link obj%}')
+        obj = MyData.objects.get(id=1)
+        c = Context({'user': user, 'obj': obj})
+        self.assertEqual(t.render(c), '<a href="/admin/myapp/mydata/1/">(admin)</a>')
+        #Test witout obj
+        c = Context({'user': user})
+        self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
+        res = self.client.get(reverse('home-page', kwargs={'pk': 1}))
+        self.assertContains(res, '<a href="#">(admin)</a>', count=0, status_code=200)
+        user = authenticate(username='admin', password='admin')
+        t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
+        obj = StorageRequests.objects.get(id=1)
+        c = Context({'user': user, 'obj': obj})
+        self.assertEqual(t.render(c), '<a href="/admin/myapp/storagerequests/1/">(admin)</a>')
+        resp = self.client.get("/admin/myapp/storagerequests/1/")
+        self.assertEqual(res.status_code, 200)
