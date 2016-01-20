@@ -43,3 +43,15 @@ class StorageRequests(models.Model):
 
     def __unicode__(self):
         return self.host
+
+
+class LogWorks(models.Model):
+    mod_name = models.CharField('Model name', max_length=50)
+    work = models.CharField('Work', max_length=10)
+    time_work = models.DateTimeField('Time work', auto_now_add=True)
+
+    class Meta:
+        ordering = ['-time_work']
+
+    def __unicode__(self):
+        return self.mod_name

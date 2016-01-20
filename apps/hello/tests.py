@@ -3,13 +3,14 @@ import datetime
 
 from StringIO import StringIO
 
+from django.db import models
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.template import Template, Context
 
-from apps.hello.models import StorageRequests, MyData
+from apps.hello.models import StorageRequests, MyData, LogWorks
 from apps.hello.forms import EditDataForm
 
 # Create your tests here.
@@ -240,3 +241,14 @@ class OtherTests(TestCase):
         self.assertTrue(u'error: Model MyData has -' in err.getvalue())
         self.assertEqual(out.getvalue().count('Model'),
                          len(models.get_models()))
+
+    def test_my_callback_signal(self):
+        """
+        This is function verify if correct work my own signal
+        """
+        obj = StorageRequests(pk=1)
+        obj.host = 'My_own_host'
+        obj.save()
+        work = LogWorks.objects.all()[0]
+        self.assertEqual(work.mod_name, 'StorageRequests')
+        self.assertEqual(work.work, 'creation')
