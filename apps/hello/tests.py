@@ -1,9 +1,13 @@
 import json
+import datetime
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+from django.template import Template, Context
 
-from apps.hello.models import StorageRequests
+from apps.hello.models import StorageRequests, MyData
+from apps.hello.forms import EditDataForm
 
 # Create your tests here.
 
@@ -102,18 +106,18 @@ class EditDataTest(TestCase):
         This is function verify login on page
         """
         # Verifying if redirected as url on login page
-        res = self.client.get(reverse('home_url', kwargs={'pk': 1}))
+        url = reverse('edit-data', kwargs={'pk': 1})
+        res = self.client.get(reverse('home-page', kwargs={'pk': 1}))
         self.assertContains(res, 'title="Login">Login</a>',
                             count=1, status_code=200)
-        res = self.client.get(reverse('edit-my-data', kwargs={'pk': 1}))
-        self.assertRedirects(res, reverse('login') + '?next=' + \
-                             reverse('edit-my-data', kwargs={'pk': 1}))
+        res = self.client.get(url)
+        self.assertRedirects(res, reverse('login') + '?next=' + url)
         # Verifying if correct login on page
         self.client.login(username='testuser', password='pass')
-        res = self.client.get(reverse('home_url', kwargs={'pk': 1}))
+        res = self.client.get(reverse('home-page', kwargs={'pk': 1}))
         self.assertContains(res, 'title="edit my data">Edit</a>',
                             count=1, status_code=200)
-        response = self.client.get(reverse('edit-my-data', kwargs={'pk': 1}))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response,
                             'class="submit" type="submit" value="Save"')
@@ -124,7 +128,7 @@ class EditDataTest(TestCase):
         """
         # Logged
         self.client.login(username='testuser', password='pass')
-        #Add all data
+        # Add all data
         data = {"name": u'Mykola',
                 "surname": u'Yaremov',
                 "date_birth": datetime.date(1980, 9, 27),
@@ -135,8 +139,8 @@ class EditDataTest(TestCase):
                 "contacts": u'akakkd23edfrwssdcvf',
                 }
         # Verifying request post , redirect - true
-        res = self.client.post(reverse('edit-my-data', kwargs={'pk': 1}), data,
-                                       follow=True)
+        res = self.client.post(reverse('edit-data', kwargs={'pk': 1}), data,
+                               follow=True)
         # Load page (/contacts/1/) if correct data
 
         self.assertEqual(res.status_code, 200)
@@ -153,7 +157,7 @@ class EditDataTest(TestCase):
         data = {"name": "Rasem",
                 "email": "wqwert", }
         # Verifying request post , redirect - true
-        res = self.client.post(reverse('edit-my-data', kwargs={'pk': 1}),
+        res = self.client.post(reverse('edit-data', kwargs={'pk': 1}),
                                data, follow=True)
         self.assertEqual(res.status_code, 200)
         self.assertContains(res, 'This field is required', count=6,
@@ -165,7 +169,7 @@ class EditDataTest(TestCase):
         """
         This is test to simple test if add datepicker widget on page
         """
-        temp = Template(EditMyDataForm())
+        temp = Template(EditDataForm())
         cont = Context()
-        # verification
+        # Verification
         self.assertTrue("$('#id_date_birth').datepicker(" in temp.render(cont))
