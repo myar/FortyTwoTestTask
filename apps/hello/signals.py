@@ -17,7 +17,6 @@ def my_callback(sender, **kwargs):
     sign.mod_name = sender._meta.object_name
     sign.work = work
     sign.save()
-    return None
 
 post_save.connect(my_callback)
 post_delete.connect(my_callback)
