@@ -17,10 +17,15 @@ def home(request, pk='1'):
 
 
 @ensure_csrf_cookie
-def http_request_storage(request):
+def http_request_storage(request, symbol='+'):
     c = {}
     c.update(csrf(request))
-    objs = StorageRequests.objects.all()
+    all_objs = StorageRequests.objects.all()
+
+    if symbol == '-':
+        objs = all_objs.order_by('-priority', )
+    else:
+        objs = all_objs
     data = objs.filter(viewed=False)
     context = {'objs': objs[:10], }
 
@@ -28,10 +33,11 @@ def http_request_storage(request):
         ids = []
         ids_str = json.loads(request.POST['ids_json'])
         pattern = '#(.+?): at'
+
         for i in ids_str:
             ids.append(int(re.search(pattern, i).group(1)))
         data.filter(id__in=ids).update(viewed=True)
-        context['new_ids'] = list(data.values_list('id', flat=True))
+
         return render_to_response('hello/list_requests.html', context)
 
     return render(request, 'hello/storage_req.html', context)

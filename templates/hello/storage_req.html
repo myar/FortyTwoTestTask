@@ -9,7 +9,6 @@
     $(document).ready(function() {
         function refreshdata() {
             $.ajax({
-                url: "{% url 'middleware-storage' %}",
                 type: 'post',
                 data: {'csrfmiddlewaretoken': $.cookie('csrftoken'),
                        'ids_json': JSON.stringify(get_list())},
@@ -34,6 +33,8 @@
 
 {% block content %}
     <h4> Last 10 of requests</h4>
+    <a href="{% url 'middleware-storage' %}">&#8743;</a>
+    <a href="{% url 'middleware-storage-param' '-' %}">&#8744;</a>
     {% include 'hello/list_requests.html' %}
 {% endblock %}
 

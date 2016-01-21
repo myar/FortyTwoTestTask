@@ -93,6 +93,18 @@ class MiddlewareTest(TestCase):
         # check if only 8 items has had special class 'odd'
         self.assertContains(request, 'class="odd"',
                             count=8, status_code=200)
+        # We can't to see that number
+        self.assertNotContains(request, '#1:')
+        request = self.client.get(reverse('middleware-storage-param',
+                                  kwargs={'symbol': '-'}), )
+        # After changing can to see
+        self.assertContains(request, '#1:')
+        # Change priority
+        objs = StorageRequests.objects.filter(id__lte=2).update(priority=0)
+        request = self.client.get(reverse('middleware-storage-param',
+                                  kwargs={'symbol': '-'}), )
+        # We can't to see that number
+        self.assertNotContains(request, '#1:')
 
 
 class EditDataTest(TestCase):
