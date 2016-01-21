@@ -75,14 +75,17 @@ p {
   position: relative;
   float: left;
   width: 340px;
-  text-align: center;
+  text-align: right;
 }
 
+.right_table td tr {
+  margin-left: 10px;
+}
 .left_table {
   position: relative;
   float: left;
   width: 370px;
-  text-align: center;
+  text-align: right;
 }
 
 .spinner {
