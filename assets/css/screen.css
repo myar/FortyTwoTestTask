@@ -55,4 +55,40 @@ p {
 .pair {
   font-weight: normal;
 }
+
+.right_button_edit {
+  position: absolute;
+  top: 90px;
+  right: 250px;
+}
+
+.links {
+  top:30px;
+  position:relative;
+}
+
+.errorlist {
+  color: red;
+}
+
+.right_table {
+  position: relative;
+  float: left;
+  width: 340px;
+  text-align: right;
+}
+
+.right_table td tr {
+  margin-left: 10px;
+}
+.left_table {
+  position: relative;
+  float: left;
+  width: 370px;
+  text-align: right;
+}
+
+.spinner {
+  display: none;
+  position: relative;
 }

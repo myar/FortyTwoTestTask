@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+  {% load staticfiles %}
+
+{% block extra_head %}
+
+  {{ form.media }}
+  <script src="http://malsup.github.com/jquery.form.js" type="text/javascript"></script>
+  <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+{% endblock%}
+
+{% block content %}
+    <form action="{% url 'edit-data' pk %}" method="post" enctype="multipart/form-data" class="editForm">
+        {% csrf_token %}
+            <table class="left_table">
+                <tr><td colspan="2"><div class="error_name"></div></td></tr>
+                <tr><td>{{ form.name.label_tag }}</td><td>{{ form.name }}</td></tr>
+                <tr><td colspan="2"><div class="error_surname"></div></td></tr>
+                <tr><td>{{ form.surname.label_tag }}</td><td>{{ form.surname }}</td></tr>
+                <tr><td colspan="2"><div class="error_date_birth"></div></td></tr>
+                <tr><td>{{ form.date_birth.label_tag }}</td><td>{{ form.date_birth }}</td></tr>
+                <tr><td>{{ form.photo.label_tag }}</td><td><div class="error_photo"></div></td></tr>
+                <tr><td colspan="2">{{ form.photo }}</td></tr>
+                <tr>
+                    <td colspan="2">
+                        {% if form.photo.value %}
+                            <img src="{{ MEDIA_URL }}{{ form.photo.value }}" alt="">
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            <table class="right_table">
+                <tr><td colspan="2"><div class="error_email"></div></td></tr>
+                <tr><td>{{ form.email.label_tag }}</td><td>{{ form.email }}</td></tr>
+                <tr><td colspan="2"><div class="error_jabber"></div></td></tr>
+                <tr><td>{{ form.jabber.label_tag }}</td><td>{{ form.jabber }}</td></tr>
+                <tr><td colspan="2"><div class="error_skype"></div></td></tr>
+                <tr><td>{{ form.skype.label_tag }}</td><td>{{ form.skype }}</td></tr>
+                <tr><td>{{ form.contacts.label_tag }}</td><td></td></tr>
+                <tr><td colspan="2"><div class="error_contacts"></div></td></tr>
+                <tr><td colspan="2">{{ form.contacts }}</td></tr>
+                <tr><td>{{ form.bio.label_tag }}</td><td></td></tr>
+                <tr><td colspan="2"><div class="error_bio"></div></td></tr>
+                <tr><td colspan="2">{{ form.bio }}</td></tr>
+            </table>
+        <div class="clear"></div>
+        <span class="spinner"><img src="{% static 'images/spinner.gif' %}" alt=""/></span>
+        <input class="submit" type="submit" value="Save" />
+        <a href="{% url 'home-page' pk %}" class='return_back'>Cancel</a>
+    </form>
+{% endblock %}
