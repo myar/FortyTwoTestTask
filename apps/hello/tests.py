@@ -1,12 +1,16 @@
 import json
 import datetime
 
+from StringIO import StringIO
+
+from django.db import models
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.template import Template, Context
 
-from apps.hello.models import StorageRequests, MyData
+from apps.hello.models import StorageRequests, MyData, LogWorks
 from apps.hello.forms import EditDataForm
 
 # Create your tests here.
@@ -179,3 +183,72 @@ class EditDataTest(TestCase):
         cont = Context()
         # Verification
         self.assertTrue("$('#id_date_birth').datepicker(" in temp.render(cont))
+
+
+class TagTest(TestCase):
+    """
+    This is test to test template tag edit_data
+    """
+
+    def test_tag_via_template_without_login(self):
+        """
+           Test when user is not authentificate
+        """
+        t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
+        c = Context()
+        self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
+        resp = self.client.get(reverse('home'))
+        self.assertNotContains(resp, '(admin)</a>')
+
+    def test_tag_via_template_with_login(self):
+        """
+           Test when user is authentificate
+        """
+        user = self.client.login(username='admin', password='admin')
+        t = Template('{% load admin_edit_object %}{% edit_link obj%}')
+        obj = MyData.objects.get(id=1)
+        c = Context({'user': user, 'obj': obj})
+        self.assertEqual(t.render(c),
+                         '<a href="/admin/hello/mydata/1/">(admin)</a>')
+        # Test witout obj
+        c = Context({'user': user})
+        self.assertEqual(t.render(c), '<a href="#">(admin)</a>')
+        resp = self.client.get(reverse('home-page', kwargs={'pk': 1}))
+        self.assertNotContains(resp, '<a href="#">(admin)</a>')
+
+        user = self.client.login(username='admin', password='admin')
+        t = Template('{% load admin_edit_object %}' + '{% edit_link obj %}')
+        obj = StorageRequests.objects.get(id=1)
+        c = Context({'user': user, 'obj': obj})
+        self.assertEqual(
+            t.render(c),
+            '<a href="/admin/hello/storagerequests/1/">(admin)</a>')
+        resp = self.client.get("/admin/hello/storagerequests/1/")
+        self.assertEqual(resp.status_code, 200)
+
+
+class OtherTests(TestCase):
+
+    def test_list_all_models(self):
+        """
+        This is function call function and verify if correct response
+        """
+
+        out = StringIO()
+        err = StringIO()
+        call_command('list_all_models', stdout=out, stderr=err)
+        self.assertTrue(u'Model MyData has -' in out.getvalue())
+        self.assertTrue(u'error: Model MyData has -' in err.getvalue())
+        self.assertEqual(out.getvalue().count('Model'),
+                         len(models.get_models()))
+
+    def test_my_callback_signal(self):
+        """
+        This is function verify if correct work my own signal
+        """
+        obj = StorageRequests(pk=1)
+        obj.host = 'My_own_host'
+        obj.save()
+        work = LogWorks.objects.all()[0]
+        self.assertEqual(work.mod_name, 'StorageRequests')
+        self.assertEqual(work.work, 'creation')
