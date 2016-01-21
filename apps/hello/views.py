@@ -20,8 +20,8 @@ def home(request, pk='1'):
 def http_request_storage(request, symbol='+'):
     c = {}
     c.update(csrf(request))
-    print symbol
     all_objs = StorageRequests.objects.all()
+
     if symbol == '-':
         objs = all_objs.order_by('-priority', )
     else:
@@ -33,6 +33,7 @@ def http_request_storage(request, symbol='+'):
         ids = []
         ids_str = json.loads(request.POST['ids_json'])
         pattern = '#(.+?): at'
+
         for i in ids_str:
             ids.append(int(re.search(pattern, i).group(1)))
         data.filter(id__in=ids).update(viewed=True)

@@ -9,7 +9,6 @@
     $(document).ready(function() {
         function refreshdata() {
             $.ajax({
-                //url: "{% url 'middleware-storage' %}",
                 type: 'post',
                 data: {'csrfmiddlewaretoken': $.cookie('csrftoken'),
                        'ids_json': JSON.stringify(get_list())},
