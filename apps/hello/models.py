@@ -2,6 +2,9 @@ from django.db import models
 
 from PIL import Image
 
+STATUS_PRIORITY = ((1, '1'),
+                   (0, '0'))
+
 
 class MyData(models.Model):
     name = models.CharField('Your name', max_length=50,
@@ -37,6 +40,7 @@ class StorageRequests(models.Model):
     method = models.CharField('Method', max_length=30)
     req_date = models.DateTimeField('Data request', auto_now_add=True)
     viewed = models.BooleanField(default=False)
+    priority = models.IntegerField(choices=STATUS_PRIORITY, default=1)
 
     class Meta:
         ordering = ['-id', ]
